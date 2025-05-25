@@ -1,0 +1,4 @@
+#!/bin/bash
+
+git init
+git commit --allow-empty -m "first commit"

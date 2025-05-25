@@ -1,0 +1,38 @@
+#!/bin/bash
+# 前提条件: gh auth login済みであること
+
+# カレントディレクトリ名を取得（リポジトリ名に使用）
+REPO_NAME=$(basename "$PWD")
+
+# デフォルトはprivate
+VISIBILITY="--private"
+DRY_RUN=false
+
+# 引数の処理
+while getopts ":pd" opt; do
+  case ${opt} in
+  d)
+    # dry-runオプション
+    DRY_RUN=true
+    ;;
+  p)
+    VISIBILITY="--public"
+    ;;
+  \?)
+    echo "Usage: $0 [-p] [-d]"
+    echo "  -p    Make the repository public (default is private)"
+    echo "  -d    Dry-run mode. Show repository name and visibility without creating it"
+    exit 1
+    ;;
+  esac
+done
+
+# dry-run出力
+if [ "$DRY_RUN" = true ]; then
+  echo "リポジトリ名: $REPO_NAME"
+  echo "公開設定: $VISIBILITY"
+  exit 0
+fi
+
+# gh コマンドでリポジトリ作成
+gh repo create "$REPO_NAME" "$VISIBILITY" --source=. --remote=origin --push

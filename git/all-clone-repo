@@ -1,0 +1,8 @@
+#!/bin/bash
+# 前提条件: gh auth login済みであること
+
+repo_owner="nobu-kishi"
+
+gh repo list $repo_owner --limit 1000 --json nameWithOwner -q '.[].nameWithOwner' | while read repo; do
+  git clone https://github.com/$repo.git
+done
