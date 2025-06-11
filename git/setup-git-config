@@ -1,0 +1,13 @@
+#!/bin/bash
+
+read -rp "Enter default branch name: " DEFAULT_BRANCH
+read -rp "Enter your name: " NAME
+read -rp "Enter your email: " EMAIL
+
+git config --global init.defaultBranch "$DEFAULT_BRANCH"
+git config --global user.name "$NAME"
+git config --global user.email "$EMAIL"
+
+echo "Git configuration applied successfully."
+echo "Current Git configuration:"
+git config --global --list
