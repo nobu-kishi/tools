@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+# 最新の100件のコミットログから選択
+commit=$(git log --oneline -n 100 | fzf --no-sort --reverse --prompt="Select commit to rebase onto: ")
+
+# 選択しなかった場合は中止
+if [ -z "$commit" ]; then
+  echo "Rebase cancelled."
+  exit 1
+fi
+
+# 選択したコミットID（最初のフィールド）を取得
+commit_id=$(echo "$commit" | awk '{print $1}')
+echo "Selected commit ID: $commit_id"
+# 対象コミットの「ひとつ前」までrebaseしたいので、^ を付ける
+git rebase -i "${commit_id}^"
