@@ -1,0 +1,14 @@
+#!/bin/bash
+
+container_id=$(docker ps --format "{{.ID}} {{.Names}}" \
+  | fzf --prompt="Select container: " \
+  | awk '{print $1}')
+
+# 選択されなければ終了
+if [[ -z "$container_id" ]]; then
+  echo "No container selected."
+  exit 1
+fi
+
+# bash または sh でコンテナに入る
+docker exec -it "$container_id" bash 2>/dev/null || docker exec -it "$container_id" sh
