@@ -1,0 +1,19 @@
+#!/bin/bash
+set -euo pipefail
+
+# NOTE: gh login済みが前提
+owner="$(gh api user --jq '.login')"
+repo_name="$(basename "$PWD")"
+
+if ! gh repo view "${owner}/${repo_name}" >/dev/null 2>&1; then
+  echo "Warning: GitHub repository '${owner}/${repo_name}' not found. (You may need to create it later)" >&2
+fi
+
+remote_url="https://github.com/${owner}/${repo_name}.git"
+if git remote get-url origin >/dev/null 2>&1; then
+  git remote set-url origin "$remote_url"
+else
+  git remote add origin "$remote_url"
+fi
+
+git remote -v
