@@ -1,22 +1,18 @@
 #!/bin/bash
-# 前提条件: gh auth login済みであること
+set -euo pipefail
 
-# カレントディレクトリ名を取得（リポジトリ名に使用）
-REPO_NAME=$(basename "$PWD")
+# NOTE: gh auth login済みが前提
+repo_name=$(basename "$PWD")
+visibility="private"
+dry_run=false
 
-# デフォルトはprivate
-VISIBILITY="--private"
-DRY_RUN=false
-
-# 引数の処理
 while getopts ":pd" opt; do
   case ${opt} in
   d)
-    # dry-runオプション
-    DRY_RUN=true
+    dry_run=true
     ;;
   p)
-    VISIBILITY="--public"
+    visibility="public"
     ;;
   \?)
     echo "Usage: $0 [-p] [-d]"
@@ -27,12 +23,9 @@ while getopts ":pd" opt; do
   esac
 done
 
-# dry-run出力
-if [ "$DRY_RUN" = true ]; then
-  echo "リポジトリ名: $REPO_NAME"
-  echo "公開設定: $VISIBILITY"
+if [ "$dry_run" = true ]; then
+  echo "Dry-run: repository='$repo_name' visibility='$visibility'"
   exit 0
 fi
 
-# gh コマンドでリポジトリ作成
-gh repo create "$REPO_NAME" "$VISIBILITY" --source=. --remote=origin --push
+gh repo create "$repo_name" "--${visibility}" --source=. --remote=origin --push
