@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# NOTE: gh login済みが前提
+# NOTE: gh auth login済みが前提
 owner="$(gh api user --jq '.login')"
 repo_name="$(basename "$PWD")"
 
