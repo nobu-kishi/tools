@@ -1,10 +1,12 @@
 #!/bin/bash
 
+filter=$([[ "$(docker context show 2>/dev/null)" == "rancher-desktop" ]] && echo "k8s")
+
 container_id=$(docker ps -a --format "{{.ID}} {{.Names}}" \
+  | grep -v "${filter:-^$}" \
   | fzf --prompt="Select container to view logs: " \
   | awk '{print $1}')
 
-# 選択されなければ終了
 if [[ -z "$container_id" ]]; then
   echo "No container selected."
   exit 1
